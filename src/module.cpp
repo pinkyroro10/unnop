@@ -56,12 +56,21 @@ if(!MDNS.begin("phonehumyai")){
 
 server.on("/styles.css",HTTP_GET, [](AsyncWebServerRequest *request)
           {request->send(SPIFFS, "/styles.css"); });
-
+          
+server.on("/CVunnop",HTTP_GET, [](AsyncWebServerRequest *request)
+          {request->send(SPIFFS, "/CVunnop.PNG"); });
+         
 server.on("bscripts.js",HTTP_GET, [](AsyncWebServerRequest *request)
-          {request->send(SPIFFS, "/bscripts.js"); });
-        
+          {request->send(SPIFFS, "/bscripts.js"); });     
+
 server.on("/",HTTP_GET, [](AsyncWebServerRequest *request)
           {request->send(SPIFFS, "/index.html"); });
+
+server.on("/Buttons",HTTP_GET, [](AsyncWebServerRequest *request)
+          {request->send(SPIFFS, "/Buttons.html"); });
+
+server.on("/info",HTTP_GET, [](AsyncWebServerRequest *request)
+          {request->send(SPIFFS, "/info.html"); });
   MDNS.addService("http","tcp",80);
   server.begin();        
 }
