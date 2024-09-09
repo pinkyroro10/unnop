@@ -1,12 +1,17 @@
 #include "module.h"
 
-const char* ssid = "Phone Very handsome";
-const char* password = "";
+const char *ssid = "Phone "; // WiFi SSID
+const char *password = "";   // WiFi PSK
 
 IPAddress ip;
 IPAddress gateways;
 IPAddress subnets;
 IPAddress dns;
+
+String gateway;
+String subnet;
+String dnss;
+
 bool skip = false;
 
 int LED_buildin = 13;
@@ -35,63 +40,76 @@ String RTU_baudRate;
 String TCP_wifi_enable;
 String TCP_eth_enable;
 String local_IP;
-String gateway;
-String subnet;
-String dnss;
 
-AsyncWebServer server(80);
+AsyncWebServer server(80); // http
 
-void setup_wifi() {
-  delay(10);
-  // We start by connecting to a WiFi network
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+void setup_wifi()
+{
+    delay(10);
+    // We start by connecting to a WiFi network
+    Serial.println();
+    Serial.print("Connecting to ");
+    Serial.println(ssid);
 
-  WiFi.mode(WIFI_STA);
-  
-  while (WiFi.status() != WL_CONNECTED) {
-    WiFi.begin(ssid, password);
-    delay(500);
-    Serial.print(".");
-  }
+    WiFi.mode(WIFI_STA);
 
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        WiFi.begin(ssid, password);
+        delay(500);
+        Serial.print(".");
+    }
+
+    Serial.println("");
+    Serial.println("WiFi connected");
+    Serial.println("IP address: ");
+    Serial.println(WiFi.localIP());
 }
 
-void setup_wifiAP(){
+void setup_wifiAP()
+{
+    if (!WiFi.softAPConfig(ip, gateways, subnets))
+    {
+        Serial.println("AP Config Failed");
+    }
     WiFi.mode(WIFI_AP);
     WiFi.softAP(ssid, password);
 
+#ifdef DEBUG
     Serial.print("\nWiFi shared on SSID: ");
     Serial.print(ssid);
     Serial.print(" ,PSK: ");
     Serial.println(password);
-    Serial.print("AP IP address: "); //Defaut192.168.4.1
-    Serial.println(WiFi.softAPIP());
+    Serial.print("AP IP address: ");
+    Serial.println(WiFi.softAPIP()); // Default 192.168.4.1
+#endif
 }
 
+void ConfigServer()
+{
+    Serial.begin(115200);
 
-void Config_server(){
-  if(!SPIFFS.begin(true)){
-    Serial.print("Error Stratinf SPIFFS!!!");
-    return;
+    // 1st step starting SPIFFS
+    if (!SPIFFS.begin(true))
+    {
+        Serial.println("Error Strating SPIFFS!!!");
+        return;
+    }
 
-  }
-  readEnvFile();
-  configureNetwork(local_IP, gateway, subnet, dnss);
+    readEnvFile();
+    configureNetwork(local_IP, gateway, subnet, dnss);
+    // 2nd step Shere WiFi AP
 
-  setup_wifiAP();
+    setup_wifiAP();
 
-if(!MDNS.begin("phonehumyai")){
-  Serial.println("Error Starting DNS");
-  return;
-}
+    // 3rd step Create DNS
+    if (!MDNS.begin("Phone"))
+    {
+        Serial.println("Error Starting DNS");
+        return;
+    }
 
-/* ============================ อ่านไฟล์ .env ============================ */
+    /* ============================ อ่านไฟล์ .env ============================ */
     server.on("/env", HTTP_GET, [](AsyncWebServerRequest *request)
               {
     File file = SPIFFS.open("/.env", "r");
@@ -108,129 +126,32 @@ if(!MDNS.begin("phonehumyai")){
     request->send(200, "text/plain", fileContent); });
     /* ==================================================================== */
 
-
-
-
-
-server.on("/hum.js",HTTP_GET, [](AsyncWebServerRequest *request)
-          {request->send(SPIFFS, "/hum.js"); });
-
-server.on("/networks",HTTP_GET, [](AsyncWebServerRequest *request)
-          {request->send(SPIFFS, "/networks.html"); });
-server.on("/styles.css",HTTP_GET, [](AsyncWebServerRequest *request)
-          {request->send(SPIFFS, "/styles.css"); });
-          
-server.on("/CVunnop",HTTP_GET, [](AsyncWebServerRequest *request)
-          {request->send(SPIFFS, "/CVunnop.PNG"); });
-         
-server.on("bscripts.js",HTTP_GET, [](AsyncWebServerRequest *request)
-          {request->send(SPIFFS, "/bscripts.js"); });     
-
-server.on("/",HTTP_GET, [](AsyncWebServerRequest *request)
-          {request->send(SPIFFS, "/index.html"); });
-
-server.on("/Buttons",HTTP_GET, [](AsyncWebServerRequest *request)
-          {request->send(SPIFFS, "/Buttons.html"); });
-
-server.on("/info",HTTP_GET, [](AsyncWebServerRequest *request)
-          {request->send(SPIFFS, "/info.html"); });
-  MDNS.addService("http","tcp",80);
-  server.begin();        
-}
-void handleIndex(AsyncWebServerRequest *request){
-
+    // 4th step Server on script and css file
+    server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/styles.css", "text/css"); });
+    server.on("/bscripts.js", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/bscripts.js", "application/javascript"); });
+    server.on("/humm.js", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/humm.js", "application/javascript"); });
+    server.on("/_Logo.png", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/_Logo.png", "application/javascript"); });
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/index.html"); });
+    server.on("/Buttons", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/Buttons.html"); });
+    server.on("/info", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/info.html"); });
+    server.on("/networks", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/networks.html"); });
+    server.on("/networksConfig", HTTP_POST, handleNetworksConfig);
+    server.on("/saveConfig", HTTP_POST, handleSaveConfig);
+    // phone.local
+    MDNS.addService("http", "tcp", 80);
+    server.begin();
 }
 
-
-
-
-
-
-
-IPAddress stringToIPAddress(String ipStr)
+void handleIndex(AsyncWebServerRequest *request)
 {
-    int octets[4];
-    int octetIndex = 0;
-    int fromIndex = 0;
-
-    for (int i = 0; i < ipStr.length(); i++)
-    {
-        if (ipStr.charAt(i) == '.' || i == ipStr.length() - 1)
-        {
-            if (i == ipStr.length() - 1)
-            {
-                i++;
-            }
-            String octet = ipStr.substring(fromIndex, i);
-            octets[octetIndex] = octet.toInt();
-            fromIndex = i + 1;
-            octetIndex++;
-        }
-    }
-    return IPAddress(octets[0], octets[1], octets[2], octets[3]);
-}
-
-bool configureNetwork(String IPAddressStr, String gatewayStr, String subnetStr, String dnsa)
-{
-    ip = stringToIPAddress(IPAddressStr);
-    gateways = stringToIPAddress(gatewayStr);
-    subnets = stringToIPAddress(subnetStr);
-    dns = stringToIPAddress(dnsa);
-
-#ifdef DEBUG
-    Serial.print("Configuring IP: ");
-    Serial.println(ip);
-    Serial.print("Configuring Gateway: ");
-    Serial.println(gateway);
-    Serial.print("Configuring Subnet: ");
-    Serial.println(subnet);
-    Serial.print("Configuring DNS: ");
-    Serial.println(dns);
-#endif
-    return true;
-}
-
-void handleNetworksConfig(AsyncWebServerRequest *request)
-{
-    String IPStr, gwStr, subStr, dnsa;
-
-    // Process each parameter if available
-    if (request->hasParam("IPAddress", true))
-    {
-        IPStr = request->getParam("IPAddress", true)->value();
-        updateEnvVariable("local_IP", IPStr); // Update local_IP environment variable
-    }
-    if (request->hasParam("gateway", true))
-    {
-        gwStr = request->getParam("gateway", true)->value();
-        updateEnvVariable("gateway", gwStr); // Update gateway environment variable
-    }
-    if (request->hasParam("subnet", true))
-    {
-        subStr = request->getParam("subnet", true)->value();
-        updateEnvVariable("subnet", subStr); // Update subnet environment variable
-    }
-    if (request->hasParam("dns", true))
-    {
-        dnsa = request->getParam("dns", true)->value();
-        updateEnvVariable("dns", dnsa); // Update dns environment variable
-    }
-
-    // Configure network based on received parameters
-    if (configureNetwork(IPStr.c_str(), gwStr.c_str(), subStr.c_str(), dnsa.c_str()))
-    {
-#ifdef DEBUG
-        Serial.println("Setup new IP address done!");
-#endif
-        request->send(200, "text/plain", "Setup new IP address done!");
-    }
-    else
-    {
-#ifdef DEBUG
-        Serial.println("Failed to update configuration");
-#endif
-        request->send(500, "text/plain", "Failed to update configuration");
-    }
 }
 
 void writeEnvFile()
@@ -290,7 +211,8 @@ void readEnvFile()
     Serial.print("STA Length: ");
     Serial.println(STA_SSID.length());
 
-    if(STA_SSID.length() > 1){
+    if (STA_SSID.length() > 1)
+    {
         MODES = "1";
     }
 
@@ -322,8 +244,6 @@ void readEnvFile()
     gateway = env_vars["gateway"];
     subnet = env_vars["subnet"];
     dnss = env_vars["dns"];
-
-  
 
 #ifdef DEBUG_ReadENV
     Serial.println("\n*====================================================================*\n*\n*");
@@ -394,14 +314,107 @@ void updateEnvVariable(const String &key, const String &value)
     readEnvFile();
 }
 
+IPAddress stringToIPAddress(String ipStr)
+{
+    int octets[4];
+    int octetIndex = 0;
+    int fromIndex = 0;
 
+    for (int i = 0; i < ipStr.length(); i++)
+    {
+        if (ipStr.charAt(i) == '.' || i == ipStr.length() - 1)
+        {
+            if (i == ipStr.length() - 1)
+            {
+                i++;
+            }
+            String octet = ipStr.substring(fromIndex, i);
+            octets[octetIndex] = octet.toInt();
+            fromIndex = i + 1;
+            octetIndex++;
+        }
+    }
+    return IPAddress(octets[0], octets[1], octets[2], octets[3]);
+}
 
+bool configureNetwork(String IPAddressStr, String gatewayStr, String subnetStr, String dnsa)
+{
+    ip = stringToIPAddress(IPAddressStr);
+    gateways = stringToIPAddress(gatewayStr);
+    subnets = stringToIPAddress(subnetStr);
+    dns = stringToIPAddress(dnsa);
 
+    Serial.print("Configuring IP: ");
+    Serial.println(ip);
+    Serial.print("Configuring Gateway: ");
+    Serial.println(gateways);
+    Serial.print("Configuring Subnet: ");
+    Serial.println(subnets);
+    Serial.print("Configuring DNS: ");
+    Serial.println(dns);
 
+    return true;
+}
 
+void handleNetworksConfig(AsyncWebServerRequest *request)
+{
+    String IPStr, gwStr, subStr, dnsa;
 
+    // Process each parameter if available
+    if (request->hasParam("IPAddress", true))
+    {
+        IPStr = request->getParam("IPAddress", true)->value();
+        updateEnvVariable("local_IP", IPStr); // Update local_IP environment variable
+    }
+    if (request->hasParam("gateway", true))
+    {
+        gwStr = request->getParam("gateway", true)->value();
+        updateEnvVariable("gateway", gwStr); // Update gateway environment variable
+    }
+    if (request->hasParam("subnet", true))
+    {
+        subStr = request->getParam("subnet", true)->value();
+        updateEnvVariable("subnet", subStr); // Update subnet environment variable
+    }
+    if (request->hasParam("dns", true))
+    {
+        dnsa = request->getParam("dns", true)->value();
+        updateEnvVariable("dns", dnsa); // Update dns environment variable
+    }
 
-
-
-
-
+    // Configure network based on received parameters
+    if (configureNetwork(IPStr.c_str(), gwStr.c_str(), subStr.c_str(), dnsa.c_str()))
+    {
+#ifdef DEBUG
+        Serial.println("Setup new IP address done!");
+#endif
+        request->send(200, "text/plain", "Setup new IP address done!");
+    }
+    else
+    {
+#ifdef DEBUG
+        Serial.println("Failed to update configuration");
+#endif
+        request->send(500, "text/plain", "Failed to update configuration");
+    }
+}
+void handleSaveConfig(AsyncWebServerRequest *request)
+{
+  String action;
+  if (request->hasParam("action", true))
+  {
+    action = request->getParam("action", true)->value();
+    if (action == "complete")
+    {
+      skip = true;
+      // Perform complete action
+      request->send(200, "text/plain", "Complete action performed.");
+    }
+    else if (action == "restart")
+    {
+      request->send(200, "text/plain", "Restarting ESP.");
+      delay(2000);
+      ESP.restart();
+    }
+  }
+}

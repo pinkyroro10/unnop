@@ -1,41 +1,33 @@
 #ifndef MODULE_H
 #define MODULE_H
 
-
-
 /*
 WiFi 3 Mode
 1 -> AP (Access Point)
 2 -> STA (Station)
 3 -> APSTA (Access Point and Station)
 */
-/*------------------------------Start Lib--------------------------*/
+#define DEBUG
 
+
+/* ------------------ Start Lib ------------------- */
 #include <Arduino.h>
+
 #include <WiFi.h>
 #include <SPIFFS.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <ESPmDNS.h>
 #include <map>
-
-/*------------------------------End Lib-------------------------------*/
-
+/* ------------------- End Lib --------------------*/
 
 
-
-
-/*------------------------------Start variable--------------------------*/
-
-extern AsyncWebServer server;
-extern const char* ssid;
-extern const char* password;
+/* ------------------ Start Variable ------------------- */
 
 extern IPAddress ip;
 extern IPAddress gateways;
 extern IPAddress subnets;
 extern IPAddress dns;
-
 extern std::map<String, String> env_vars;
 
 extern String MODES;
@@ -60,23 +52,34 @@ extern String gateway;
 extern String subnet;
 extern String dnss;
 
-/*------------------------------END variable--------------------------*/
+extern AsyncWebServer server;
+
+extern const char* ssid;
+extern const char* password;
+
+
+/* ------------------- End Variable --------------------*/
 
 
 
-
-/*------------------------------Start Function--------------------------*/
-void writEnvFile();
+/* ------------------ Start Function ------------------- */
+void writeEnvFile();
 void readEnvFile();
 void updateEnvVariable(const String &key, const String &value);
-bool configureNetwork(String IPAddressStr, String gatewayStr, String subnetStr, String dnsr);
+bool configureNetwork(String IPAddressStr, String gatewayStr, String subnetStr, String dnsa);
 IPAddress stringToIPAddress(String ipStr);
 
 void setup_wifi();
 void setup_wifiAP();
-void Config_server();
-void handleIndex(AsyncWebServerRequest *request);
 
-/*------------------------------END Function--------------------------*/
+void ConfigServer();
+
+void handleIndex(AsyncWebServerRequest *request);
+void handleNetworksConfig(AsyncWebServerRequest *request);
+void handleSaveConfig(AsyncWebServerRequest *request);
+
+
+
+/* ------------------- End Function -------------------- */
 
 #endif
