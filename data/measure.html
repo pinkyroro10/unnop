@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unnop Suriya - ปุ่มสุ่มเลข</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Kanit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #249DD1, #004751);
+            color: white;
+        }
+        
+        .name {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        .container {
+            text-align: center;
+            background-color: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        #numberDisplay {
+            font-size: 5rem;
+            width: 200px;
+            height: 200px;
+            line-height: 200px;
+            background-color: #8CCCF9;
+            color: #004751;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(140, 204, 249, 0.5);
+        }
+        
+        .button {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            background-color: #004751;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .button:hover {
+            background-color: #8CCCF9;
+            color: #004751;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .button:active {
+            transform: scale(0.98);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="name">Unnop Suriya</h1>
+    <div class="container">
+        <div id="numberDisplay">1</div>
+        <button class="button" onclick="generateRandomNumber()">สุ่มตัวเลข</button>
+    </div>
+    
+    <script>
+        const numberDisplay = document.getElementById('numberDisplay');
+        
+        function generateRandomNumber() {
+            const randomNumber = Math.floor(Math.random() * 100) + 1;
+            numberDisplay.textContent = randomNumber;
+            
+            // เปลี่ยนสีพื้นหลังของตัวเลขแบบสุ่ม
+            const randomColor = Math.floor(Math.random()*16777215).toString(16);
+            numberDisplay.style.backgroundColor = "#" + randomColor;
+            numberDisplay.style.color = getContrastColor(randomColor);
+        }
+        
+        function getContrastColor(hexcolor) {
+            // แปลง hex เป็น RGB
+            var r = parseInt(hexcolor.substr(0,2),16);
+            var g = parseInt(hexcolor.substr(2,2),16);
+            var b = parseInt(hexcolor.substr(4,2),16);
+            var yiq = ((r*299)+(g*587)+(b*114))/1000;
+            // คืนค่าสีขาวหรือดำ ขึ้นอยู่กับความสว่างของสีพื้นหลัง
+            return (yiq >= 128) ? '#004751' : 'white';
+        }
+    </script>
+</body>
+</html>

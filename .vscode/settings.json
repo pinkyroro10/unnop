@@ -9,5 +9,6 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "utility": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "C:/Users/Acernitro/OneDrive/เอกสาร/PlatformIO/Projects/unnop/lib/AsyncTCP"
 }

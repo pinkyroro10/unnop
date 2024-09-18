@@ -124,25 +124,22 @@ void ConfigServer()
     }
     file.close();
     request->send(200, "text/plain", fileContent); });
-    /* ==================================================================== */
+    /* ==================================================================== */    
+    //html
+server.on("/Login.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/Login.html");
+});
+server.on("/measure.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/measure.html");
+});
+ 
+server.on("/CVunnop.PNG", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/CVunnop.PNG");
+});
 
-    // 4th step Server on script and css file
-    server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/styles.css", "text/css"); });
-    server.on("/bscripts.js", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/bscripts.js", "application/javascript"); });
-    server.on("/humm.js", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/humm.js", "application/javascript"); });
-    server.on("/_Logo.png", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/_Logo.png", "application/javascript"); });
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/index.html"); });
-    server.on("/Buttons", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/Buttons.html"); });
-    server.on("/info", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/info.html"); });
-    server.on("/networks", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/networks.html"); });
+
+
+
     server.on("/networksConfig", HTTP_POST, handleNetworksConfig);
     server.on("/saveConfig", HTTP_POST, handleSaveConfig);
     // phone.local
