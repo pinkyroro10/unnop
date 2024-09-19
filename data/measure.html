@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unnop Suriya - ปุ่มสุ่มเลข</title>
+    <title>Unnop Suriya - ปุ่มสุ่มเลขแบบสล็อต</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap');
         
@@ -49,6 +49,7 @@
             margin: 0 auto 2rem;
             transition: all 0.3s ease;
             box-shadow: 0 0 20px rgba(140, 204, 249, 0.5);
+            overflow: hidden;
         }
         
         .button {
@@ -83,35 +84,68 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        @keyframes slotSpin {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
+        }
     </style>
 </head>
 <body>
     <h1 class="name">Unnop Suriya</h1>
     <div class="container">
-        <div id="numberDisplay">1</div>
-        <button class="button" onclick="generateRandomNumber()">สุ่มตัวเลข</button>
+        <div id="numberDisplay"><div id="slotMachine">1</div></div>
+        <button class="button" onclick="spinSlot()">สุ่มตัวเลข</button> 
     </div>
     
     <script>
         const numberDisplay = document.getElementById('numberDisplay');
-        
-        function generateRandomNumber() {
-            const randomNumber = Math.floor(Math.random() * 100) + 1;
-            numberDisplay.textContent = randomNumber;
-            
+        const slotMachine = document.getElementById('slotMachine');
+        let isSpinning = false;
+
+        function spinSlot() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            const duration = 500; // ระยะเวลาในการหมุน (มิลลิวินาที)
+            const interval = 30; // ระยะห่างระหว่างการเปลี่ยนตัวเลข (มิลลิวินาที)
+            let spins = 0;
+            const maxSpins = duration / interval;
+
+            const spinInterval = setInterval(() => {
+                const randomNumber = Math.floor(Math.random() * 100) + 1;
+                slotMachine.textContent = randomNumber;
+
+                spins++;
+                if (spins >= maxSpins) {
+                    clearInterval(spinInterval);
+                    finalizeSpin();
+                }
+            }, interval);
+
+            slotMachine.style.animation = `slotSpin ${duration/1000}s linear`;
+        }
+
+        function finalizeSpin() {
+            const finalNumber = Math.floor(Math.random() * 100) + 1;
+            slotMachine.textContent = finalNumber;
+            slotMachine.style.animation = 'none';
+
             // เปลี่ยนสีพื้นหลังของตัวเลขแบบสุ่ม
             const randomColor = Math.floor(Math.random()*16777215).toString(16);
             numberDisplay.style.backgroundColor = "#" + randomColor;
             numberDisplay.style.color = getContrastColor(randomColor);
+
+            isSpinning = false;
         }
-        
+
         function getContrastColor(hexcolor) {
             // แปลง hex เป็น RGB
             var r = parseInt(hexcolor.substr(0,2),16);
             var g = parseInt(hexcolor.substr(2,2),16);
             var b = parseInt(hexcolor.substr(4,2),16);
             var yiq = ((r*299)+(g*587)+(b*114))/1000;
-            // คืนค่าสีขาวหรือดำ ขึ้นอยู่กับความสว่างของสีพื้นหลัง
+            // คืนค่าสีขาวหรือดำ 
             return (yiq >= 128) ? '#004751' : 'white';
         }
     </script>

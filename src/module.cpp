@@ -125,7 +125,7 @@ void ConfigServer()
     file.close();
     request->send(200, "text/plain", fileContent); });
     /* ==================================================================== */    
-    //html
+//html
 server.on("/Login.html", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/Login.html");
 });
@@ -136,15 +136,17 @@ server.on("/measure.html", HTTP_GET, [](AsyncWebServerRequest *request) {
 server.on("/CVunnop.PNG", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/CVunnop.PNG");
 });
+server.on("/lottery.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/lottery.html");
+});
 
 
 
-
-    server.on("/networksConfig", HTTP_POST, handleNetworksConfig);
-    server.on("/saveConfig", HTTP_POST, handleSaveConfig);
+server.on("/networksConfig", HTTP_POST, handleNetworksConfig);
+server.on("/saveConfig", HTTP_POST, handleSaveConfig);
     // phone.local
     MDNS.addService("http", "tcp", 80);
-    server.begin();
+server.begin();
 }
 
 void handleIndex(AsyncWebServerRequest *request)

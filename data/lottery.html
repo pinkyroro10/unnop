@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เครื่องสุ่มเลขหวย</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Kanit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #249DD1, #004751);
+            color: rgb(17, 12, 179);
+        }
+        
+        h1 {
+            color: #004751;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            background-color: #FFFFFF;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .prize {
+            margin-bottom: 15px;
+        }
+        
+        .prize-name {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-right: 10px;
+            color: #249DD1;
+        }
+        
+        .prize-number {
+            font-size: 1.5em;
+            color: #004751;
+            font-weight: bold;
+        }
+
+        .date {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        button {
+            background-color: #249DD1;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        button:hover {
+            background-color: #8CCCF9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lottery</h1>
+<div class="container">
+    <div class="prize">
+        <span class="prize-name">รางวัลที่ 1:</span>
+        <span class="prize-number" id="prize1">XXXXXX</span>
+    </div>
+    <div class="prize">
+        <span class="prize-name">รางวัลที่ 2:</span>
+        <span class="prize-number" id="prize2">XXXXXX</span>
+    </div>
+    <div class="prize">
+        <span class="prize-name">รางวัลที่ 3:</span>
+        <span class="prize-number" id="prize3">XXXXXX</span>
+    </div>
+    <div class="prize">
+        <span class="prize-name">รางวัลที่ 4:</span>
+        <span class="prize-number" id="prize4">XXXXXX</span>
+    </div>
+    <div class="prize">
+        <span class="prize-name">รางวัลที่ 5:</span>
+        <span class="prize-number" id="prize5">XXXXXX</span>
+    </div>
+    <div class="prize">
+        <span class="prize-name">รางวัลเลขหน้า 3 ตัว:</span>
+        <span class="prize-number" id="front3">XXX</span>
+    </div>
+    <div class="prize">
+        <span class="prize-name">รางวัลเลขท้าย 3 ตัว:</span>
+        <span class="prize-number" id="back3">XXX</span>
+    </div>
+    <div class="prize">
+        <span class="prize-name">รางวัลเลขท้าย 2 ตัว:</span>
+        <span class="prize-number" id="back2">XX</span>
+    </div>
+    <button onclick="generateNumbers()">สุ่มเลขหวย</button>
+    <div class="date" id="dateDisplay"></div>
+</div>
+
+
+    <script>
+        function generateNumbers() {
+            document.getElementById('prize1').textContent = generateRandomNumber(6);
+            document.getElementById('prize2').textContent = generateRandomNumber(6);
+            document.getElementById('prize3').textContent = generateRandomNumber(6);
+            document.getElementById('prize4').textContent = generateRandomNumber(6);
+            document.getElementById('prize5').textContent = generateRandomNumber(6);
+            document.getElementById('front3').textContent = generateRandomNumber(3);
+            document.getElementById('back3').textContent = generateRandomNumber(3);
+            document.getElementById('back2').textContent = generateRandomNumber(2);
+
+            displayDate(); 
+        }
+
+        function generateRandomNumber(digits) {
+            return Math.floor(Math.random() * Math.pow(10, digits)).toString().padStart(digits, '0');
+        }
+
+        function displayDate() {
+            const currentDate = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+            const formattedDate = currentDate.toLocaleDateString('th-TH', options);
+            document.getElementById('dateDisplay').textContent = `สุ่มเมื่อ: ${formattedDate}`;
+        }
+    </script>
+</body>
+</html>
