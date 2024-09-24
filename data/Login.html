@@ -3,99 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unnop Suriya</title>
+    <title>Unnop Suriya - Cyberpunk</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
         
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Kanit', sans-serif;
-            background: linear-gradient(135deg, #249DD1, #004751);
+            font-family: 'Orbitron', sans-serif;
+            background-color: #120458;
+            color: #00ff00;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+        .header {
+            width: 100%;
+            background-color: rgba(255, 0, 0, 0.1);
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff00ff, #00ffff);
+            animation: glitch 2s linear infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         .name {
-            font-size: 4rem;
+            font-size: 3rem;
             font-weight: 700;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 2rem;
-            animation: fadeIn 2s ease-in-out;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+            margin-bottom: 1rem;
+            animation: flicker 1.5s infinite alternate;
+        }
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+              text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+            }
+            20%, 24%, 55% {       
+              text-shadow: none;
+            }
         }
         .navbar {
-            background-color: rgba(255,255,255,0.1);
-            padding: 2rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
             border-radius: 15px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 0 20px #00ffff;
+            margin-top: 2rem;
         }
         .button-container {
             display: flex;
             gap: 20px;
+            justify-content: center;
         }
         .button {
-            padding: 20px 40px;
-            font-size: 1.5rem;
-            background-color: #004751;
-            color: white;
-            border: none;
-            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: transparent;
+            color: #00ffff;
+            border: 2px solid #00ffff;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(0, 255, 255, 0.4),
+                transparent
+            );
+            transition: all 0.5s;
+        }
+        .button:hover::before {
+            left: 100%;
         }
         .button:hover {
-            background-color: #8CCCF9;
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background-color: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 20px #00ffff;
         }
         #myImage {
             display: none;
             max-width: 100%;
             margin-top: 20px;
+            border: 3px solid #00ffff;
+            box-shadow: 0 0 20px #00ffff;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .content {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .lvl-up {
+            font-size: 1.5rem;
+            color: #ff00ff;
+            margin-bottom: 1rem;
+        }
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 2rem;
+        }
+        .feature {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid #00ffff;
+            width: 30%;
+        }
+        .feature h3 {
+            color: #ff00ff;
+            margin-bottom: 0.5rem;
+        }
+        .feature p {
+            color: #00ff00;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <h1 class="name">Unnop Suriya</h1>
-    <nav class="navbar">
-        <div class="button-container">
-            <button class="button" id="toggleButton" onclick="toggleImage()">Super Resume</button>
-            <!-- ลิ้งก์ไปหน้า measure.html -->
-            <a href="measure.html">
-                <button class="button">Measure</button>
-            </a>
-            <!-- ลิ้งก์ไปหน้า lottery.html -->
-            <a href="lottery.html">
-                <button class="button">Lottery</button>
-            </a>
+    <div class="container">
+        <header class="header">
+            <h1 class="name">Unnop Suriya</h1>
+            <div class="lvl-up">LVL UP - LVL 99</div>
+        </header>
+        <nav class="navbar">
+            <div class="button-container">
+                <button class="button" id="toggleButton" onclick="toggleImage()">Super Resume</button>
+                <a href="measure.html">
+                    <button class="button">measure</button>
+                </a>
+                <a href="lottery.html">
+                    <button class="button">lottery</button>
+                </a>
+            </div>
+        </nav>
+        
+        <img id="myImage" src="CVunnop.PNG" alt="Super Resume Image">
+        
+        <div class="content">
+            <div class="features">
+                <div class="feature">
+                    <h3>BEST GAMES</h3>
+                    <p>Experience the future of gaming with our cutting-edge titles.</p>
+                </div>
+                <div class="feature">
+                    <h3>NEW LOCATION</h3>
+                    <p>Explore neon-lit streets and cybernetic landscapes.</p>
+                </div>
+                <div class="feature">
+                    <h3>NEW CHARACTERS</h3>
+                    <p>Meet unique individuals with advanced AI and distinct abilities.</p>
+                </div>
+            </div>
         </div>
-    </nav>
-    
-    <img id="myImage" src="CVunnop.PNG" alt="Super Resume Image">
+    </div>
 
     <script>
         let isImageShown = false;
 
-        function toggleImage() {
-            var img = document.getElementById("myImage");
-            if (!isImageShown) {
-                img.style.display = "block"; // แสดงรูปภาพ
-                isImageShown = true; // เปลี่ยนสถานะเป็นแสดงรูปภาพแล้ว
-            } else {
-                img.style.display = "none"; // ซ่อนรูปภาพเมื่อกดปุ่มอีกครั้ง
-                isImageShown = false; // เปลี่ยนสถานะกลับไปยังไม่แสดง
-            }
-        }
+function toggleImage() {
+    var img = document.getElementById("myImage");
+    if (!isImageShown) {
+        img.style.display = "block";
+        isImageShown = true;
+    } else {
+        img.style.display = "none";
+        isImageShown = false;
+    }
+}
     </script>
 </body>
 </html>

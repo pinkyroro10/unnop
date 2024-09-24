@@ -136,6 +136,7 @@ server.on("/measure.html", HTTP_GET, [](AsyncWebServerRequest *request) {
 server.on("/CVunnop.PNG", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/CVunnop.PNG");
 });
+
 server.on("/lottery.html", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/lottery.html");
 });

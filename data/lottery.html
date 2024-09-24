@@ -5,33 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เครื่องสุ่มเลขหวย</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
         
         body {
-            font-family: 'Kanit', sans-serif;
+            font-family: 'Orbitron', sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #249DD1, #004751);
-            color: rgb(17, 12, 179);
+            background: linear-gradient(135deg, #010024, #45006d);
+            color: #00ffea;
+            overflow: hidden;
         }
         
         h1 {
-            color: #004751;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
             margin-bottom: 20px;
+            font-size: 2.5em;
         }
         
         .container {
-            background-color: #FFFFFF;
+            background-color: rgba(0, 0, 0, 0.7);
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3), 0 4px 25px rgba(0, 255, 255, 0.4);
             max-width: 400px;
             width: 100%;
             text-align: center;
+            color: #00ffea;
+            border: 1px solid #ff00ff;
         }
         
         .prize {
@@ -40,81 +45,111 @@
         
         .prize-name {
             font-weight: 700;
-            font-size: 1.1em;
+            font-size: 1.2em;
             margin-right: 10px;
-            color: #249DD1;
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
         }
         
         .prize-number {
             font-size: 1.5em;
-            color: #004751;
+            color: #00ffea;
             font-weight: bold;
+            text-shadow: 0 0 5px #00ffea;
         }
 
         .date {
             margin-top: 20px;
             font-size: 0.9em;
-            color: #555;
+            color: #00ffea;
         }
         
         button {
-            background-color: #249DD1;
+            background-color: #ff00ff;
             border: none;
             color: white;
             padding: 12px 24px;
-            text-align: center;
-            text-decoration: none;
             font-size: 16px;
             cursor: pointer;
             border-radius: 25px;
-            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px #ff00ff;
+            transition: all 0.3s ease;
             margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 0, 255, 0.4), transparent);
+            transition: all 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
         }
         
         button:hover {
-            background-color: #8CCCF9;
+            background-color: #00ffea;
+            box-shadow: 0 0 20px #00ffea;
         }
+
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+              text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+            }
+            20%, 24%, 55% {
+              text-shadow: none;
+            }
+        }
+
     </style>
 </head>
 <body>
     <h1>Lottery</h1>
-<div class="container">
-    <div class="prize">
-        <span class="prize-name">รางวัลที่ 1:</span>
-        <span class="prize-number" id="prize1">XXXXXX</span>
+    <div class="container">
+        <div class="prize">
+            <span class="prize-name">รางวัลที่ 1:</span>
+            <span class="prize-number" id="prize1">XXXXXX</span>
+        </div>
+        <div class="prize">
+            <span class="prize-name">รางวัลที่ 2:</span>
+            <span class="prize-number" id="prize2">XXXXXX</span>
+        </div>
+        <div class="prize">
+            <span class="prize-name">รางวัลที่ 3:</span>
+            <span class="prize-number" id="prize3">XXXXXX</span>
+        </div>
+        <div class="prize">
+            <span class="prize-name">รางวัลที่ 4:</span>
+            <span class="prize-number" id="prize4">XXXXXX</span>
+        </div>
+        <div class="prize">
+            <span class="prize-name">รางวัลที่ 5:</span>
+            <span class="prize-number" id="prize5">XXXXXX</span>
+        </div>
+        <div class="prize">
+            <span class="prize-name">รางวัลเลขหน้า 3 ตัว:</span>
+            <span class="prize-number" id="front3">XXX</span>
+        </div>
+        <div class="prize">
+            <span class="prize-name">รางวัลเลขท้าย 3 ตัว:</span>
+            <span class="prize-number" id="back3">XXX</span>
+        </div>
+        <div class="prize">
+            <span class="prize-name">รางวัลเลขท้าย 2 ตัว:</span>
+            <span class="prize-number" id="back2">XX</span>
+        </div>
+        <button onclick="generateNumbers()">สุ่มเลขหวย</button>
+        <div class="date" id="dateDisplay"></div>
     </div>
-    <div class="prize">
-        <span class="prize-name">รางวัลที่ 2:</span>
-        <span class="prize-number" id="prize2">XXXXXX</span>
-    </div>
-    <div class="prize">
-        <span class="prize-name">รางวัลที่ 3:</span>
-        <span class="prize-number" id="prize3">XXXXXX</span>
-    </div>
-    <div class="prize">
-        <span class="prize-name">รางวัลที่ 4:</span>
-        <span class="prize-number" id="prize4">XXXXXX</span>
-    </div>
-    <div class="prize">
-        <span class="prize-name">รางวัลที่ 5:</span>
-        <span class="prize-number" id="prize5">XXXXXX</span>
-    </div>
-    <div class="prize">
-        <span class="prize-name">รางวัลเลขหน้า 3 ตัว:</span>
-        <span class="prize-number" id="front3">XXX</span>
-    </div>
-    <div class="prize">
-        <span class="prize-name">รางวัลเลขท้าย 3 ตัว:</span>
-        <span class="prize-number" id="back3">XXX</span>
-    </div>
-    <div class="prize">
-        <span class="prize-name">รางวัลเลขท้าย 2 ตัว:</span>
-        <span class="prize-number" id="back2">XX</span>
-    </div>
-    <button onclick="generateNumbers()">สุ่มเลขหวย</button>
-    <div class="date" id="dateDisplay"></div>
-</div>
-
 
     <script>
         function generateNumbers() {
