@@ -1,6 +1,6 @@
 #include "module.h"
 
-const char *ssid = "Phone "; // WiFi SSID
+const char *ssid = "Unnop_Suriya "; // WiFi SSID
 const char *password = "";   // WiFi PSK
 
 IPAddress ip;
@@ -141,6 +141,17 @@ server.on("/lottery.html", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/lottery.html");
 });
 
+server.on("/game.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/game.html");
+});
+
+server.on("/game.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/game.js");
+});
+
+server.on("/game.css", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/game.css");
+});
 
 
 server.on("/networksConfig", HTTP_POST, handleNetworksConfig);
