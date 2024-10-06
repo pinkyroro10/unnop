@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Orbitron', sans-serif;
-            background-color: #120458;
+            background-color: #0a0a0a;
             color: #00ff00;
             height: 100vh;
             display: flex;
@@ -27,41 +27,34 @@
         }
         .header {
             width: 100%;
-            background-color: rgba(255, 0, 0, 0.1);
             padding: 20px 0;
             text-align: center;
             position: relative;
             overflow: hidden;
-        }
-        .header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #ff00ff, #00ffff);
-            animation: glitch 2s linear infinite;
-        }
-        @keyframes glitch {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            box-shadow: 0 0 30px rgba(0, 174, 255, 0.6);
         }
         .name {
             font-size: 3rem;
             font-weight: 700;
-            color: #ff00ff;
-            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+            color: #00aeff;
+            text-shadow: 0 0 10px #00aeff, 0 0 20px #00aeff, 0 0 30px #00aeff;
             margin-bottom: 1rem;
-            animation: flicker 1.5s infinite alternate;
+            animation: glow 1.5s infinite alternate;
+            position: relative;
         }
-        @keyframes flicker {
-            0%, 18%, 22%, 25%, 53%, 57%, 100% {
-              text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 10px #00aeff, 0 0 20px #00aeff, 0 0 30px #00aeff;
             }
-            20%, 24%, 55% {       
-              text-shadow: none;
+            100% {
+                text-shadow: 0 0 20px #9e159e, 0 0 30px #973a64, 0 0 40px #dd1393;
             }
+        }
+        .lvl-up {
+            font-size: 1.5rem;
+            color: #ff00ff;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
         }
         .navbar {
             background-color: rgba(0, 0, 0, 0.5);
@@ -89,43 +82,25 @@
             position: relative;
             overflow: hidden;
         }
-        .button::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                120deg,
-                transparent,
-                rgba(0, 255, 255, 0.4),
-                transparent
-            );
-            transition: all 0.5s;
-        }
-        .button:hover::before {
-            left: 100%;
-        }
         .button:hover {
             background-color: rgba(0, 255, 255, 0.1);
             box-shadow: 0 0 20px #00ffff;
         }
         #myImage {
             display: none;
-            max-width: 100%;
+            max-width: 80%;
+            height: auto;
             margin-top: 20px;
             border: 3px solid #00ffff;
             box-shadow: 0 0 20px #00ffff;
+            position: absolute; /* Position it absolutely */
+            top: 50%; /* Center it vertically */
+            left: 50%; /* Center it horizontally */
+            transform: translate(-50%, -50%); /* Adjust position */
         }
         .content {
             margin-top: 2rem;
             text-align: center;
-        }
-        .lvl-up {
-            font-size: 1.5rem;
-            color: #ff00ff;
-            margin-bottom: 1rem;
         }
         .features {
             display: flex;
@@ -138,10 +113,12 @@
             border-radius: 10px;
             border: 1px solid #00ffff;
             width: 30%;
+            box-shadow: 0 0 20px #00ffff;
         }
         .feature h3 {
             color: #ff00ff;
             margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px #ff00ff;
         }
         .feature p {
             color: #00ff00;
@@ -150,19 +127,19 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" onclick="hideImage()"> <!-- Add onclick event to the container -->
         <header class="header">
             <h1 class="name">Unnop Suriya</h1>
             <div class="lvl-up">LVL UP - LVL 99</div>
         </header>
         <nav class="navbar">
             <div class="button-container">
-                <button class="button" id="toggleButton" onclick="toggleImage()">Super Resume</button>
+                <button class="button" id="toggleButton" onclick="toggleImage(event)">Super Resume</button>
                 <a href="measure.html">
-                    <button class="button">measure</button>
+                    <button class="button">Measure</button>
                 </a>
                 <a href="lottery.html">
-                    <button class="button">lottery</button>
+                    <button class="button">Lottery</button>
                 </a>
                 <a href="game.html">
                     <button class="button">Game</button>
@@ -193,7 +170,8 @@
     <script>
         let isImageShown = false;
 
-        function toggleImage() {
+        function toggleImage(event) {
+            event.stopPropagation(); // Prevent click event from bubbling up to the container
             var img = document.getElementById("myImage");
             if (!isImageShown) {
                 img.style.display = "block";
@@ -203,6 +181,13 @@
                 isImageShown = false;
             }
         }
+
+        function hideImage() {
+            var img = document.getElementById("myImage");
+            img.style.display = "none"; // Hide the image
+            isImageShown = false; // Reset the flag
+        }
     </script>
+    
 </body>
 </html>
